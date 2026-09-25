@@ -1,0 +1,42 @@
+
+{% extends "base.html" %}
+{% block content %}
+<section class="section-head">
+  <div>
+    <p class="eyebrow">Saved plans</p>
+    <h1>Recommendation History</h1>
+  </div>
+</section>
+
+<div id="history" class="history-grid">
+  <div class="history-empty">Loading...</div>
+</div>
+
+<script>
+async function loadHistory() {
+  const box = document.getElementById("history");
+  const r = await fetch("/api/history");
+  const data = await r.json();
+
+  if (!data.ok || !data.items.length) {
+    box.innerHTML = `<div class="history-empty"><h3>No saved recommendations yet</h3><p>Run a planner to create your first saved recommendation.</p></div>`;
+    return;
+  }
+
+  box.innerHTML = data.items.map(item => `
+    <article class="history-item">
+      <span class="pill">${item.planner_type}</span>
+      <h3>${escapeHtml(item.result.title || "Recommendation")}</h3>
+      <p>${escapeHtml(item.result.summary || "")}</p>
+      <small>${new Date(item.created_at).toLocaleString()}</small>
+    </article>
+  `).join("");
+}
+function escapeHtml(value) {
+  return String(value).replace(/[&<>"']/g, s => ({
+    "&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#039;"
+  }[s]));
+}
+loadHistory();
+</script>
+{% endblock %}

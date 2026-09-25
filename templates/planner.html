@@ -1,0 +1,136 @@
+
+{% extends "base.html" %}
+{% set labels = {
+  "home": ["Home Interior Planner", "Build a practical room plan."],
+  "party": ["Party Budget Planner", "Turn your event details into an organised plan."],
+  "jewelry": ["Jewellery Planner", "Get a jewellery direction for your occasion."]
+} %}
+{% block content %}
+<section class="section-head">
+  <div>
+    <p class="eyebrow">PocketSmart AI</p>
+    <h1>{{ labels[planner_type][0] }}</h1>
+    <p>{{ labels[planner_type][1] }}</p>
+  </div>
+</section>
+
+<div class="planner-layout">
+  <form class="form-card" id="plannerForm" {% if planner_type == "jewelry" %}enctype="multipart/form-data"{% endif %}>
+    {% if planner_type == "home" %}
+      <label>Room
+        <select name="room">
+          <option>Living Room</option>
+          <option>Bedroom</option>
+          <option>Kitchen</option>
+          <option>Dining Room</option>
+          <option>Study Room</option>
+        </select>
+      </label>
+      <label>Style
+        <select name="style">
+          <option>Modern</option>
+          <option>Minimal</option>
+          <option>Traditional</option>
+          <option>Luxury</option>
+        </select>
+      </label>
+      <label>Budget
+        <input name="budget" placeholder="Example: ₹1,00,000">
+      </label>
+    {% elif planner_type == "party" %}
+      <label>Occasion
+        <input name="occasion" placeholder="Birthday / Engagement / Family event">
+      </label>
+      <label>Theme
+        <select name="theme">
+          <option>Elegant</option>
+          <option>Birthday Fun</option>
+          <option>Family Celebration</option>
+          <option>Classic Traditional</option>
+        </select>
+      </label>
+      <label>Guests
+        <input name="guests" type="number" min="1" placeholder="Example: 40">
+      </label>
+      <label>Budget
+        <input name="budget" placeholder="Example: ₹25,000">
+      </label>
+    {% else %}
+      <label>Occasion
+        <input name="occasion" placeholder="Wedding / Party / Office / College">
+      </label>
+      <label>Outfit / Colour
+        <input name="outfit" placeholder="Example: Dark blue saree">
+      </label>
+      <label>Budget
+        <input name="budget" placeholder="Example: ₹15,000">
+      </label>
+      <label>Optional Photo
+        <input name="photo" type="file" accept=".png,.jpg,.jpeg,.webp">
+      </label>
+    {% endif %}
+    <button class="button primary full" type="submit">Generate Recommendation</button>
+    <p id="message" class="form-message"></p>
+  </form>
+
+  <section class="result-card" id="resultCard">
+    <div class="result-placeholder">
+      <span class="big-icon">✦</span>
+      <h2>Your recommendation will appear here</h2>
+      <p>Fill in the planner and click Generate Recommendation.</p>
+    </div>
+  </section>
+</div>
+
+<script>
+const plannerType = "{{ planner_type }}";
+const form = document.getElementById("plannerForm");
+const resultCard = document.getElementById("resultCard");
+const message = document.getElementById("message");
+
+function showResult(result) {
+  const suggestions = (result.suggestions || []).map(x => `<li>${escapeHtml(x)}</li>`).join("");
+  const ai = result.ai_note
+    ? `<div class="ai-note"><strong>AI enrichment</strong><pre>${escapeHtml(result.ai_note)}</pre></div>`
+    : "";
+  resultCard.innerHTML = `
+    <p class="eyebrow">Recommendation</p>
+    <h2>${escapeHtml(result.title || "Your Plan")}</h2>
+    <p class="result-summary">${escapeHtml(result.summary || "")}</p>
+    <ul class="suggestions">${suggestions}</ul>
+    ${ai}
+    <div class="saved">✓ Saved to Recommendation History</div>
+  `;
+}
+
+function escapeHtml(value) {
+  return String(value).replace(/[&<>"']/g, s => ({
+    "&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#039;"
+  }[s]));
+}
+
+form.addEventListener("submit", async (e) => {
+  e.preventDefault();
+  message.textContent = "Generating...";
+  let response;
+
+  if (plannerType === "jewelry") {
+    response = await fetch("/api/planner/jewelry", {
+      method: "POST",
+      body: new FormData(form)
+    });
+  } else {
+    const data = Object.fromEntries(new FormData(form).entries());
+    response = await fetch(`/api/planner/${plannerType}`, {
+      method: "POST",
+      headers: {"Content-Type": "application/json"},
+      body: JSON.stringify(data)
+    });
+  }
+
+  const data = await response.json();
+  message.textContent = data.ok ? "" : data.message;
+  if (data.ok) showResult(data.result);
+});
+</script>
+{% endblock %}

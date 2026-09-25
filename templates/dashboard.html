@@ -1,0 +1,32 @@
+
+{% extends "base.html" %}
+{% block content %}
+<div class="section-head">
+  <div>
+    <p class="eyebrow">Welcome, {{ user.name }}</p>
+    <h1>What would you like to plan?</h1>
+  </div>
+  <a class="button secondary" href="{{ url_for('history_page') }}">View History</a>
+</div>
+
+<section class="cards three">
+  <a class="planner-card" href="{{ url_for('planner_page', planner_type='home') }}">
+    <span class="big-icon">🏠</span>
+    <h2>Home Interior</h2>
+    <p>Room + style + budget → recommendation</p>
+    <span class="arrow">Open planner →</span>
+  </a>
+  <a class="planner-card" href="{{ url_for('planner_page', planner_type='party') }}">
+    <span class="big-icon">🎉</span>
+    <h2>Party Budget</h2>
+    <p>Theme + guests + budget → plan</p>
+    <span class="arrow">Open planner →</span>
+  </a>
+  <a class="planner-card" href="{{ url_for('planner_page', planner_type='jewelry') }}">
+    <span class="big-icon">💎</span>
+    <h2>Jewellery</h2>
+    <p>Occasion + outfit + budget → ideas</p>
+    <span class="arrow">Open planner →</span>
+  </a>
+</section>
+{% endblock %}

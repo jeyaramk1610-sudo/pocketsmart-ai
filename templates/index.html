@@ -1,0 +1,39 @@
+
+{% extends "base.html" %}
+{% block content %}
+<section class="hero">
+  <div>
+    <p class="eyebrow">AI-assisted planning</p>
+    <h1>Plan smarter with <span>PocketSmart AI</span></h1>
+    <p class="hero-copy">Get practical ideas for home interiors, party budgets, and jewellery planning in one simple app.</p>
+    <div class="hero-actions">
+      <a class="button primary" href="{{ url_for('register_page') }}">Get Started</a>
+      <a class="button secondary" href="{{ url_for('login_page') }}">Login</a>
+    </div>
+  </div>
+  <div class="hero-card">
+    <div class="mini-icon">✦</div>
+    <h3>One place. Three planners.</h3>
+    <p>Home · Party · Jewellery</p>
+    <div class="status-dot">Ready to plan</div>
+  </div>
+</section>
+
+<section class="cards three">
+  <article class="feature">
+    <div class="icon">🏠</div>
+    <h3>Home Interior</h3>
+    <p>Choose room, style and budget to receive a practical planning suggestion.</p>
+  </article>
+  <article class="feature">
+    <div class="icon">🎉</div>
+    <h3>Party Budget</h3>
+    <p>Organise theme, guest count and budget into a simple event plan.</p>
+  </article>
+  <article class="feature">
+    <div class="icon">💎</div>
+    <h3>Jewellery</h3>
+    <p>Get jewellery direction based on occasion, outfit and budget, with optional photo input.</p>
+  </article>
+</section>
+{% endblock %}
