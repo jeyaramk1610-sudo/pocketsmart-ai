@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # PocketSmart AI — Flask Edition
 
 This edition keeps the PocketSmart AI planning flow while avoiding the FastAPI/Pydantic native modules that can be blocked by Windows Enterprise Application Control.
@@ -80,3 +81,7 @@ The built-in recommendation engine remains available when the API key is empty o
 This edition intentionally avoids packages such as `pydantic-core`, `httptools`, `watchfiles`, and other native FastAPI dependencies.
 
 If your organization's Application Control policy also blocks Flask or another package, that is a Windows policy issue rather than a project-code issue; use an administrator-approved development environment.
+=======
+# pocketsmart-ai
+Pocket smart AI -smart budget and Recommendation app
+>>>>>>> 81cc6ddf0d2b553c785002dab35fd7fb7ffbb85f
